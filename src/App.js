@@ -14,7 +14,7 @@ function App() {
   const loadingTexts = [
     "Colocando los colores favoritos de perla...",
     "¡Ya casi está listo!...ajustanto todo para que sonria..",
-    "¡Ya casi está Preciosa!........................<3..",
+    "¡Ya casi está !........................<3..",
   ];
 
   React.useEffect(() => {
@@ -23,7 +23,20 @@ function App() {
 
     return () => window.removeEventListener("load", handleLoad);
   }, []);
-
+  React.useEffect(() => {
+    let audio;
+    if (isOpened) {
+      audio = new Audio(require("../src/audio.mp3"));
+      audio.volume = 0.5;
+      audio.play();
+    }
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, [isOpened]);
   React.useEffect(() => {
     if (!loading) return;
     const timer = setInterval(() => {
@@ -119,145 +132,200 @@ function App() {
         return () => clearTimeout(timer);
       }, []);
 
+      // Confetti effect
+      const [showConfetti, setShowConfetti] = React.useState(false);
+      const [showImage, setShowImage] = React.useState(false);
+
+      // Confetti canvas ref
+      const confettiRef = React.useRef(null);
+
+      React.useEffect(() => {
+        if (showConfetti && confettiRef.current) {
+          import('canvas-confetti').then((confetti) => {
+        confetti.create(confettiRef.current, { resize: true })({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+          });
+        }
+      }, [showConfetti]);
+
       return showPaper ? (
         <>
-          <motion.img
-            src={paper}
-            alt="Carta"
-            style={{
-              position: "absolute",
-              left: "-8%",
-              top: "-85%",
-              width: "28rem",
-              height: "49rem",
-              transform: "translate(-50%, -50%)",
-              zIndex: 2,
-              pointerEvents: "none",
-            }}
-            initial={{ scale: 0.5, opacity: 0, y: 100 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ duration: 1, type: "spring" }}
-          />
-          <motion.div
-            style={{
-              position: "absolute",
-              left: "calc(-8% + 62px)",
-              top: "-48%",
-              width: "calc(18rem)",
-              height: "43rem",
-              zIndex: 3,
-              pointerEvents: "none",
-              background: "transparent",
-              padding: "20px",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              color: "#5a3d1e",
-              fontFamily: "Short Stack, cursive",
-              fontSize: "1.4rem",
-              whiteSpace: "pre-line",
-              overflow: "hidden",
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1, duration: 0.8 }}
-          >
-            <TypewriterText
-              text={`Hello beibi,\n\n Sabés?, es inevitable  no querer besarte, abrazarte, que te apoyes en mi hombro, siento tan bien cuando estas conmigo y he decidido dejar de estar al limite de un casi algo a que seas mi 100% y por eso quiero preguntarte...\n\nPerla Ruby,\n¿Quierés ser mi novia? 💌`}
-              speed={40}
-            />
-          </motion.div>
-          <motion.div
-            className="buttons"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 15, duration: 0.7, type: "spring" }}
-            style={{
-              marginTop: "5rem",
-              width: "100%",
-              display: "flex",
-              gap: "1rem",
-              justifyContent: "center",
-              pointerEvents: "auto",
-            }}
-          >
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                zIndex: 9,
-                fontSize: "1.2rem",
-                padding: "0.5rem 1.5rem",
-                borderRadius: "8px",
-                border: "none",
-                background: "#e75480",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              Si
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                zIndex: 9,
-                fontSize: "1.2rem",
-                padding: "0.5rem 1.5rem",
-                borderRadius: "8px",
-                border: "none",
-                background: "#aaa",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              No
-            </motion.button>
-          </motion.div>
-          <motion.img
-            src="https://png.pngtree.com/png-clipart/20230914/original/pngtree-beatles-sticker-vector-png-image_11087776.png"
-            
-            alt="Floating Paper"
-            initial={{ y: 60, x: 0, rotate: 0, opacity: 0 }}
-            animate={{
-              y: [60, 80, 60],
-              x: [0, 20, 0],
-              opacity: 1,
-              rotate: [0, 8, 0],
-            }}
-            transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
-            style={{
-              position: "absolute",
-              left: "56%",
-              bottom: "37rem",
-              width: "8rem",
-              zIndex: 10,
-              pointerEvents: "none",
-              filter: "drop-shadow(0 4px 12px #e7548055)",
-              transform: "translateX(-50%)",
-            }}
+          <canvas
+        ref={confettiRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          pointerEvents: "none",
+          zIndex: 9999,
+          display: showConfetti ? "block" : "none"
+        }}
           />
           <motion.img
-            src="https://png.pngtree.com/png-vector/20230815/ourmid/pngtree-rock-and-roll-stickers-vector-png-image_6942489.png"
-            alt="Floating Paper"
-            initial={{ y: 60, x: 0, rotate: 0, opacity: 0 }}
-            animate={{
-              y: [60, 80, 60],
-              x: [0, 20, 0],
-              opacity: 1,
-              rotate: [0, 8, 0],
-            }}
-            // transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
-            style={{
-              position: "absolute",
-              left: "50%",
-              bottom: "-6rem",
-              width: "9rem",
-              zIndex: 10,
-              pointerEvents: "none",
-              filter: "drop-shadow(0 4px 12px #e7548055)",
-              transform: "translateX(-50%)",
-            }}
+        src={paper}
+        alt="Carta"
+        style={{
+          position: "absolute",
+          left: "-8%",
+          top: "-85%",
+          width: "28rem",
+          height: "49rem",
+          transform: "translate(-50%, -50%)",
+          zIndex: 2,
+          pointerEvents: "none",
+        }}
+        initial={{ scale: 0.5, opacity: 0, y: 100 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{ duration: 1, type: "spring" }}
+          />
+          <motion.div
+        style={{
+          position: "absolute",
+          left: "calc(-8% + 62px)",
+          top: "-48%",
+          width: "calc(18rem)",
+          height: "43rem",
+          zIndex: 3,
+          pointerEvents: "none",
+          background: "transparent",
+          padding: "20px",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          color: "#5a3d1e",
+          fontFamily: "Short Stack, cursive",
+          fontSize: "1.4rem",
+          whiteSpace: "pre-line",
+          overflow: "hidden",
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.1, duration: 0.8 }}
+          >
+        <TypewriterText
+          text={`Hello beibi,\n\n Sabés?, es inevitable  no querer besarte, abrazarte, que te apoyes en mi hombro, siento tan bien cuando estas conmigo y he decidido dejar de estar al limite de un casi algo a que seas mi 100% y por eso quiero preguntarte...\n\nPerla Ruby,\n¿Quierés ser mi novia? 💌`}
+          speed={40}
+        />
+          </motion.div>
+          <motion.div
+        className="buttons"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 15, duration: 0.7, type: "spring" }}
+        style={{
+          marginTop: "5rem",
+          width: "100%",
+          display: "flex",
+          gap: "1rem",
+          justifyContent: "center",
+          pointerEvents: "auto",
+        }}
+          >
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            zIndex: 9,
+            fontSize: "1.2rem",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "8px",
+            border: "none",
+            background: "#e75480",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            setShowConfetti(true);
+            setShowImage(true);
+            setTimeout(() => setShowConfetti(false), 2500);
+          }}
+        >
+          Si
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            zIndex: 9,
+            fontSize: "1.2rem",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "8px",
+            border: "none",
+            background: "#aaa",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+          onClick={() => alert("descuida flaquis")}
+        >
+          No
+        </motion.button>
+          </motion.div>
+          {showImage && (
+        <motion.img
+          src="https://media.giphy.com/media/vUHcwYtCiXBY8FNMiE/giphy.gif?cid=ecf05e474ha3zt9x8dfmqm6xff4rum49yryzx1m4fqx9zxhm&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+          alt="Celebration"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, type: "spring" }}
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "10%",
+            transform: "translateX(-50%)",
+            width: "18rem",
+            zIndex: 10000,
+            pointerEvents: "none",
+          }}
+        />
+          )}
+          <motion.img
+        src="https://png.pngtree.com/png-clipart/20230914/original/pngtree-beatles-sticker-vector-png-image_11087776.png"
+        alt="Floating Paper"
+        initial={{ y: 60, x: 0, rotate: 0, opacity: 0 }}
+        animate={{
+          y: [60, 80, 60],
+          x: [0, 20, 0],
+          opacity: 1,
+          rotate: [0, 8, 0],
+        }}
+        transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
+        style={{
+          position: "absolute",
+          left: "56%",
+          bottom: "37rem",
+          width: "8rem",
+          zIndex: 10,
+          pointerEvents: "none",
+          filter: "drop-shadow(0 4px 12px #e7548055)",
+          transform: "translateX(-50%)",
+        }}
+          />
+          <motion.img
+        src="https://png.pngtree.com/png-vector/20230815/ourmid/pngtree-rock-and-roll-stickers-vector-png-image_6942489.png"
+        alt="Floating Paper"
+        initial={{ y: 60, x: 0, rotate: 0, opacity: 0 }}
+        animate={{
+          y: [60, 80, 60],
+          x: [0, 20, 0],
+          opacity: 1,
+          rotate: [0, 8, 0],
+        }}
+        // transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+        style={{
+          position: "absolute",
+          left: "50%",
+          bottom: "-6rem",
+          width: "9rem",
+          zIndex: 10,
+          pointerEvents: "none",
+          filter: "drop-shadow(0 4px 12px #e7548055)",
+          transform: "translateX(-50%)",
+        }}
           />
         </>
       ) : null;
