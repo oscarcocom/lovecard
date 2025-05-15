@@ -216,7 +216,7 @@ function App() {
         className="buttons"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 15, duration: 0.7, type: "spring" }}
+        transition={{ delay: 4, duration: 0.7, type: "spring" }}
         style={{
           marginTop: "5rem",
           width: "100%",
