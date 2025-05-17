@@ -151,7 +151,7 @@ function App() {
         }
       }, [showConfetti]);
 
-      return showPaper ? (
+      return (
         <>
           <canvas
         ref={confettiRef}
@@ -327,8 +327,30 @@ function App() {
           transform: "translateX(-50%)",
         }}
           />
+          <motion.img
+        src="https://i.pinimg.com/originals/69/95/39/699539285d0d5ff66131416d0275e739.gif"
+        alt="Cute Cat"
+        initial={{ y: 60, x: 0, rotate: 0, opacity: 0 }}
+        animate={{
+          y: [60, 80, 60],
+          x: [0, -20, 0],
+          opacity: 1,
+          rotate: [0, -8, 0],
+        }}
+        transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
+        style={{
+          position: "absolute",
+          left: "16%",
+          bottom: "-3rem",
+          width: "8rem",
+          zIndex: 10,
+          pointerEvents: "none",
+          filter: "drop-shadow(0 4px 12px #e7548055)",
+          transform: "translateX(-50%)",
+        }}
+          />
         </>
-      ) : null;
+      );
     }
   }
 }
